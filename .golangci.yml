@@ -1,0 +1,36 @@
+run:
+  concurrency: 4
+  timeout: 3m
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - bodyclose
+    - durationcheck
+    - errcheck
+    - errorlint
+    - forbidigo
+    - goimports
+    - gosec
+    - gosimple
+    - govet
+    - nilerr
+    - predeclared
+    - revive
+    - staticcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - whitespace
+
+linters-settings:
+  forbidigo:
+    forbid:
+      - ^(fmt\.Print.*|print|println)$
+      - ^spew\.Dump$
+      - ^pp\.(P|PP|Sp|Fp)rint?$
+
+issues:
+  exclude:
+    - (.*)should have comment(.+)or be unexported|comment(.+)should be of the form

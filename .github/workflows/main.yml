@@ -1,0 +1,56 @@
+name: Check & test & build
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  check:
+    name: Quality & security checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+          check-latest: true
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Lint Go Code
+        run: make check
+
+  test:
+    name: Test & coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+          check-latest: true
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Run unit tests with
+        run: make test
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [check, test]
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+          check-latest: true
+
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: make build

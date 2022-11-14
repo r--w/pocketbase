@@ -41,7 +41,8 @@ jobs:
 
       - name: Run Pocketbase
         run: |
-          ./bin/pocketbase serve &
+          make serve &
+          sleep 3
           
       - name: Run unit tests with
         run: make test

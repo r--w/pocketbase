@@ -1,5 +1,6 @@
 package migrations
 
+// #nosec
 const (
 	PostsAdmin         = "posts_admin"
 	PostsUser          = "posts_user"

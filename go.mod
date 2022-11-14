@@ -5,11 +5,11 @@ go 1.19
 require (
 	github.com/duke-git/lancet/v2 v2.1.9
 	github.com/go-resty/resty/v2 v2.7.0
-	github.com/hashicorp/go-multierror v1.1.1
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.7.0
 	github.com/pocketbase/pocketbase v0.8.0-rc1
 	github.com/stretchr/testify v1.8.1
+	go.uber.org/multierr v1.8.0
 	golang.org/x/sync v0.1.0
 )
 
@@ -49,7 +49,6 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/google/wire v0.5.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.6.0 // indirect
-	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
@@ -66,6 +65,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.opencensus.io v0.23.0 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 	gocloud.dev v0.27.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/image v0.1.0 // indirect

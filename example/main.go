@@ -6,8 +6,8 @@ import (
 
 	"pocketbase"
 
-	"github.com/hashicorp/go-multierror"
 	"github.com/mitchellh/mapstructure"
+	"go.uber.org/multierr"
 )
 
 type Post struct {
@@ -17,29 +17,26 @@ type Post struct {
 
 func main() {
 	// TODO add documentation how to run local Pocketbase server
-	// TODO example with custom options
-	// TODO example with Params
 	// TODO add documentation about mapstructure usage here
 
 	var errors error
-	client := pocketbase.NewClient("http://localhost:8090",
-		pocketbase.WithAdminEmailPassword("admin1@admin.com", "admin@admin.com"),
-		// pocketbase.WithDebug(),
-	)
-	// client := pocketbase.NewClient("http://localhost:8090")
+	client := pocketbase.NewClient("http://localhost:8090") // pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"),
+	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com"),
+	// pocketbase.WithDebug(),
+
 	response, err := client.List("posts_public", pocketbase.Params{
 		Size:    1,
 		Page:    1,
 		Sort:    "-created",
 		Filters: "field~'test'",
 	})
-	errors = multierror.Append(errors, err)
+	errors = multierr.Append(errors, err)
 
 	log.Printf("Total items: %d, total pages: %d\n", response.TotalItems, response.TotalPages)
 	for _, item := range response.Items {
 		var test Post
 		err := mapstructure.Decode(item, &test)
-		errors = multierror.Append(errors, err)
+		errors = multierr.Append(errors, err)
 
 		log.Printf("Item: %#v\n", test)
 	}
@@ -49,12 +46,13 @@ func main() {
 	err = client.Create("posts_public", Post{
 		Field: "test_" + time.Now().Format(time.Stamp),
 	})
-	errors = multierror.Append(errors, err)
+	errors = multierr.Append(errors, err)
 
-	// or use map[string]interface{}
+	// or use simple map[string]interface{}
 	err = client.Create("posts_public", map[string]interface{}{
 		"field": "test_" + time.Now().Format(time.Stamp),
 	})
+	errors = multierr.Append(errors, err)
 
 	if errors != nil {
 		log.Fatal(errors)

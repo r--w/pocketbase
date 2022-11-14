@@ -13,7 +13,6 @@ func init() {
 	m.Register(func(db dbx.Builder) error {
 		dao := daos.New(db)
 		for _, c := range []string{PostsAdmin, PostsUser, PostsPublic} {
-
 			collection, err := dao.FindCollectionByNameOrId(c)
 			if err != nil {
 				return err

@@ -6,7 +6,7 @@ export GOPROXY=https://proxy.golang.org
 
 LDFLAGS=-ldflags "-s -w"
 
-.PHONY: build check clean format help serve test tidy
+.PHONY: all build check clean format help serve test tidy
 
 all: check test build ## Default target: check, test, build
 

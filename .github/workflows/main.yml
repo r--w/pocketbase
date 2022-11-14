@@ -10,14 +10,14 @@ jobs:
     name: Quality & security checks
     runs-on: ubuntu-latest
     steps:
-#      - name: Set up Go
-#        uses: actions/setup-go@v3
-#        with:
-#          go-version: 1.19
-#          check-latest: true
-#
-#      - name: Check out code
-#        uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+          check-latest: true
+
+      - name: Check out code
+        uses: actions/checkout@v2
 #
 #      - name: Lint Go Code
 #        run: make check

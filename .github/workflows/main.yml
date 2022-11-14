@@ -17,7 +17,7 @@ jobs:
           check-latest: true
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Lint Go Code
         run: make check
@@ -34,7 +34,7 @@ jobs:
           check-latest: true
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build
         run: make build

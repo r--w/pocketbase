@@ -23,7 +23,7 @@ jobs:
         run: make check
 
   build_and_test:
-    name: Build
+    name: Build & test
     runs-on: ubuntu-latest
     needs: [check]
     steps:
@@ -41,6 +41,7 @@ jobs:
 
       - name: Run Pocketbase
         run: |
+          ls -al
           make serve &
           sleep 3
           

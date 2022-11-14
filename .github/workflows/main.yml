@@ -18,9 +18,9 @@ jobs:
 
       - name: Check out code
         uses: actions/checkout@v2
-#
-#      - name: Lint Go Code
-#        run: make check
+
+      - name: Lint Go Code
+        run: make check
 
   build_and_test:
     name: Build & test
@@ -41,8 +41,6 @@ jobs:
 
       - name: Run Pocketbase
         run: |
-          ls -al ./
-          ls -al ./bin/
           make serve &
           sleep 3
           

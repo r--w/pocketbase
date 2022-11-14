@@ -41,7 +41,9 @@ jobs:
 
       - name: Run Pocketbase
         run: |
-          ls -al
+          ls -al ./bin/
+          ls -al ./bin/pocketbase
+          file ./bin/pocketbase
           make serve &
           sleep 3
           

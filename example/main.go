@@ -42,13 +42,13 @@ func main() {
 
 	log.Println("Inserting new item")
 	// use can use struct type - just make sure it has json tags
-	err = client.Create("posts_public", Post{
+	_, err = client.Create("posts_public", Post{
 		Field: "test_" + time.Now().Format(time.Stamp),
 	})
 	errors = multierr.Append(errors, err)
 
 	// or use simple map[string]interface{}
-	err = client.Create("posts_public", map[string]interface{}{
+	_, err = client.Create("posts_public", map[string]interface{}{
 		"field": "test_" + time.Now().Format(time.Stamp),
 	})
 	errors = multierr.Append(errors, err)

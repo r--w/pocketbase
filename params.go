@@ -1,6 +1,6 @@
 package pocketbase
 
-type Params struct {
+type ListParams struct {
 	Page    int
 	Size    int
 	Filters string

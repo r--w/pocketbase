@@ -143,7 +143,7 @@ func (c *Client) Delete(collection string, id string) error {
 	return nil
 }
 
-func (c *Client) List(collection string, params Params) (ResponseList, error) {
+func (c *Client) List(collection string, params ListParams) (ResponseList, error) {
 	var response ResponseList
 
 	if err := c.Authorize(); err != nil {

@@ -86,7 +86,7 @@ func TestListAccess(t *testing.T) {
 			} else if tt.user.email != "" {
 				c = NewClient(defaultURL, WithUserEmailPassword(tt.user.email, tt.user.password))
 			}
-			r, err := c.List(tt.collection, Params{})
+			r, err := c.List(tt.collection, ListParams{})
 			assert.Equal(t, tt.wantErr, err != nil, err)
 			assert.Equal(t, tt.wantResult, r.TotalItems > 0)
 		})
@@ -146,7 +146,7 @@ func TestClient_List(t *testing.T) {
 		name       string
 		client     *Client
 		collection string
-		params     Params
+		params     ListParams
 		wantResult bool
 		wantErr    bool
 	}{
@@ -161,7 +161,7 @@ func TestClient_List(t *testing.T) {
 			name:       "List no results - query",
 			client:     defaultClient,
 			collection: migrations.PostsPublic,
-			params: Params{
+			params: ListParams{
 				Filters: "field='some_random_value'",
 			},
 			wantErr:    false,
@@ -171,7 +171,7 @@ func TestClient_List(t *testing.T) {
 			name:       "List no results - invalid query",
 			client:     defaultClient,
 			collection: migrations.PostsPublic,
-			params: Params{
+			params: ListParams{
 				Filters: "field~~~some_random_value'",
 			},
 			wantErr:    true,

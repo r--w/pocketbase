@@ -1,4 +1,4 @@
-module pocketbase
+module github.com/r--w/pocketbase
 
 go 1.19
 

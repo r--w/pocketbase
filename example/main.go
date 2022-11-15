@@ -4,9 +4,8 @@ import (
 	"log"
 	"time"
 
-	"pocketbase"
-
 	"github.com/mitchellh/mapstructure"
+	"github.com/r--w/pocketbase"
 	"go.uber.org/multierr"
 )
 
@@ -17,12 +16,12 @@ type Post struct {
 
 func main() {
 	// TODO add documentation how to run local Pocketbase server
-	// TODO add documentation about mapstructure usage here
-
 	var errors error
-	client := pocketbase.NewClient("http://localhost:8090") // pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"),
-	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com"),
-	// pocketbase.WithDebug(),
+	client := pocketbase.NewClient("http://localhost:8090")
+	// Config options:
+	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
+	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")
+	// pocketbase.WithDebug()
 
 	response, err := client.List("posts_public", pocketbase.Params{
 		Size:    1,

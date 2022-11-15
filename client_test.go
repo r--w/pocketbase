@@ -3,8 +3,7 @@ package pocketbase
 import (
 	"testing"
 
-	"pocketbase/migrations"
-
+	"github.com/r--w/pocketbase/migrations"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,14 +40,14 @@ func TestListAccess(t *testing.T) {
 		admin      auth
 		user       auth
 		collection string
-		wantRes    bool
+		wantResult bool
 		wantErr    bool
 	}{
 		{
 			name:       "With admin credentials - posts_admin",
 			admin:      auth{email: migrations.AdminEmailPassword, password: migrations.AdminEmailPassword},
 			collection: migrations.PostsAdmin,
-			wantRes:    true,
+			wantResult: true,
 			wantErr:    false,
 		},
 		{
@@ -59,7 +58,7 @@ func TestListAccess(t *testing.T) {
 		{
 			name:       "Without credentials - posts_public",
 			collection: migrations.PostsPublic,
-			wantRes:    true,
+			wantResult: true,
 			wantErr:    false,
 		},
 		{
@@ -67,14 +66,14 @@ func TestListAccess(t *testing.T) {
 			// no error is returned, but empty result
 			name:       "Without credentials - posts_user",
 			collection: migrations.PostsUser,
-			wantRes:    false,
+			wantResult: false,
 			wantErr:    false,
 		},
 		{
 			name:       "With user credentials - posts_user",
 			user:       auth{email: migrations.UserEmailPassword, password: migrations.UserEmailPassword},
 			collection: migrations.PostsUser,
-			wantRes:    true,
+			wantResult: true,
 			wantErr:    false,
 		},
 	}
@@ -88,7 +87,7 @@ func TestListAccess(t *testing.T) {
 			}
 			r, err := c.List(tt.collection, Params{})
 			assert.Equal(t, tt.wantErr, err != nil, err)
-			assert.Equal(t, tt.wantRes, r.TotalItems > 0)
+			assert.Equal(t, tt.wantResult, r.TotalItems > 0)
 		})
 	}
 }
@@ -135,6 +134,61 @@ func TestAuthorizeEmailPassword(t *testing.T) {
 			}
 			err := c.Authorize()
 			assert.Equal(t, tt.wantErr, err != nil)
+		})
+	}
+}
+
+func TestClient_List(t *testing.T) {
+	defaultClient := NewClient(defaultURL)
+
+	tests := []struct {
+		name       string
+		client     *Client
+		collection string
+		params     Params
+		wantResult bool
+		wantErr    bool
+	}{
+		{
+			name:       "List with no params",
+			client:     defaultClient,
+			collection: migrations.PostsPublic,
+			wantErr:    false,
+			wantResult: true,
+		},
+		{
+			name:       "List no results - query",
+			client:     defaultClient,
+			collection: migrations.PostsPublic,
+			params: Params{
+				Filters: "field='some_random_value'",
+			},
+			wantErr:    false,
+			wantResult: false,
+		},
+		{
+			name:       "List no results - invalid query",
+			client:     defaultClient,
+			collection: migrations.PostsPublic,
+			params: Params{
+				Filters: "field~~~some_random_value'",
+			},
+			wantErr:    true,
+			wantResult: false,
+		},
+		{
+			name:       "List invalid collection",
+			client:     defaultClient,
+			collection: "invalid_collection",
+			wantErr:    true,
+			wantResult: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := tt.client.List(tt.collection, tt.params)
+			assert.Equal(t, tt.wantErr, err != nil, err)
+			assert.Equal(t, tt.wantResult, got.TotalItems > 0)
 		})
 	}
 }

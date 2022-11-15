@@ -1,9 +1,8 @@
 package main
 
 import (
-	_ "pocketbase/migrations"
-
 	"github.com/pocketbase/pocketbase"
+	_ "github.com/r--w/pocketbase/migrations"
 )
 
 func main() {

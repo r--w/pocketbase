@@ -2,6 +2,7 @@ package pocketbase
 
 import (
 	"testing"
+	"time"
 
 	"github.com/r--w/pocketbase/migrations"
 	"github.com/stretchr/testify/assert"
@@ -189,6 +190,58 @@ func TestClient_List(t *testing.T) {
 			got, err := tt.client.List(tt.collection, tt.params)
 			assert.Equal(t, tt.wantErr, err != nil, err)
 			assert.Equal(t, tt.wantResult, got.TotalItems > 0)
+		})
+	}
+}
+
+func TestClient_Create(t *testing.T) {
+	defaultClient := NewClient(defaultURL)
+	defaultBody := map[string]interface{}{
+		"field": "value_" + time.Now().Format(time.Stamp),
+	}
+
+	tests := []struct {
+		name       string
+		client     *Client
+		collection string
+		body       any
+		wantErr    bool
+		wantID     bool
+	}{
+		{
+			name:       "Create with no body",
+			client:     defaultClient,
+			collection: migrations.PostsPublic,
+			wantErr:    true,
+		},
+		{
+			name:       "Create with body",
+			client:     defaultClient,
+			collection: migrations.PostsPublic,
+			body:       defaultBody,
+			wantErr:    false,
+			wantID:     true,
+		},
+		{
+			name:       "Create invalid collections",
+			client:     defaultClient,
+			collection: "invalid_collection",
+			body:       defaultBody,
+			wantErr:    true,
+		},
+		{
+			name:       "Create no auth",
+			client:     defaultClient,
+			collection: migrations.PostsUser,
+			body:       defaultBody,
+			wantErr:    true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			r, err := tt.client.Create(tt.collection, tt.body)
+			assert.Equal(t, tt.wantErr, err != nil, err)
+			assert.Equal(t, tt.wantID, r.ID != "")
 		})
 	}
 }

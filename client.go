@@ -87,23 +87,26 @@ func (c *Client) Update(collection string, id string, body any) error {
 	return nil
 }
 
-func (c *Client) Create(collection string, body any) error {
+func (c *Client) Create(collection string, body any) (ResponseCreate, error) {
+	var response ResponseCreate
+
 	if err := c.Authorize(); err != nil {
-		return err
+		return response, err
 	}
 
 	request := c.client.R().
 		SetHeader("Content-Type", "application/json").
 		SetPathParam("collection", collection).
-		SetBody(body)
+		SetBody(body).
+		SetResult(&response)
 
 	resp, err := request.Post(c.url + "/api/collections/{collection}/records")
 	if err != nil {
-		return fmt.Errorf("[create] can't send update request to pocketbase, err %w", err)
+		return response, fmt.Errorf("[create] can't send update request to pocketbase, err %w", err)
 	}
 
 	if resp.IsError() {
-		return fmt.Errorf("[create] pocketbase returned status: %d, msg: %s, body: %s, err %w",
+		return response, fmt.Errorf("[create] pocketbase returned status: %d, msg: %s, body: %s, err %w",
 			resp.StatusCode(),
 			resp.String(),
 			fmt.Sprintf("%+v", body), // TODO remove that after debugging
@@ -111,7 +114,7 @@ func (c *Client) Create(collection string, body any) error {
 		)
 	}
 
-	return nil
+	return *resp.Result().(*ResponseCreate), nil
 }
 
 func (c *Client) Delete(collection string, id string) error {
@@ -140,8 +143,8 @@ func (c *Client) Delete(collection string, id string) error {
 	return nil
 }
 
-func (c *Client) List(collection string, params Params) (Response, error) {
-	var response Response
+func (c *Client) List(collection string, params Params) (ResponseList, error) {
+	var response ResponseList
 
 	if err := c.Authorize(); err != nil {
 		return response, err

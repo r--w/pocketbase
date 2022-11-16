@@ -6,6 +6,7 @@ import (
 
 	"github.com/r--w/pocketbase/migrations"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -194,10 +195,76 @@ func TestClient_List(t *testing.T) {
 	}
 }
 
+func TestClient_Delete(t *testing.T) {
+	client := NewClient(defaultURL)
+	field := "value_" + time.Now().Format(time.StampMilli)
+
+	// delete non-existing item
+	err := client.Delete(migrations.PostsPublic, "non_existing_id")
+	assert.Error(t, err)
+
+	// create temporary item
+	resultCreated, err := client.Create(migrations.PostsPublic, map[string]any{
+		"field": field,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resultCreated.ID)
+
+	// confirm item exists
+	resultList, err := client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	assert.NoError(t, err)
+	assert.Len(t, resultList.Items, 1)
+
+	// delete temporary item
+	err = client.Delete(migrations.PostsPublic, resultCreated.ID)
+	assert.NoError(t, err)
+
+	// confirm item does not exist
+	resultList, err = client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	assert.NoError(t, err)
+	assert.Len(t, resultList.Items, 0)
+}
+
+func TestClient_Update(t *testing.T) {
+	client := NewClient(defaultURL)
+	field := "value_" + time.Now().Format(time.StampMilli)
+
+	// update non-existing item
+	err := client.Update(migrations.PostsPublic, "non_existing_id", map[string]any{
+		"field": field,
+	})
+	assert.Error(t, err)
+
+	// create temporary item
+	resultCreated, err := client.Create(migrations.PostsPublic, map[string]any{
+		"field": field,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resultCreated.ID)
+
+	// confirm item exists
+	resultList, err := client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	assert.NoError(t, err)
+	require.Len(t, resultList.Items, 1)
+	assert.Equal(t, field, resultList.Items[0]["field"])
+
+	// update temporary item
+	err = client.Update(migrations.PostsPublic, resultCreated.ID, map[string]any{
+		"field": field + "_updated",
+	})
+	assert.NoError(t, err)
+
+	// confirm changes
+	resultList, err = client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	assert.NoError(t, err)
+	require.Len(t, resultList.Items, 1)
+	assert.Equal(t, field+"_updated", resultList.Items[0]["field"])
+}
+
 func TestClient_Create(t *testing.T) {
 	defaultClient := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
-		"field": "value_" + time.Now().Format(time.Stamp),
+		"field": "value_" + time.Now().Format(time.StampMilli),
 	}
 
 	tests := []struct {

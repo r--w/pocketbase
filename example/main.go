@@ -15,10 +15,11 @@ type Post struct {
 }
 
 func main() {
-	// TODO add documentation how to run local Pocketbase server
+	// REMEMBER to start the Pocketbase before running this example with `make serve` command
+
 	var errors error
 	client := pocketbase.NewClient("http://localhost:8090")
-	// Config options:
+	// Other configuration options:
 	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
 	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")
 	// pocketbase.WithDebug()
@@ -41,16 +42,19 @@ func main() {
 	}
 
 	log.Println("Inserting new item")
-	// use can use struct type - just make sure it has json tags
+	// you can use struct type - just make sure it has JSON tags
 	_, err = client.Create("posts_public", Post{
 		Field: "test_" + time.Now().Format(time.Stamp),
 	})
 	errors = multierr.Append(errors, err)
 
-	// or use simple map[string]interface{}
-	_, err = client.Create("posts_public", map[string]interface{}{
+	// or you can use simple map[string]any
+	r, err := client.Create("posts_public", map[string]any{
 		"field": "test_" + time.Now().Format(time.Stamp),
 	})
+	errors = multierr.Append(errors, err)
+
+	err = client.Delete("posts_public", r.ID)
 	errors = multierr.Append(errors, err)
 
 	if errors != nil {

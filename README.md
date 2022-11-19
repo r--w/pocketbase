@@ -5,6 +5,8 @@
 This repository contains community-maintained Go SDK for Pocketbase API.
 It's well-tested and used in production in [Coinpaprika](https://coinpaprika.com), but not all endpoints are covered yet.
 
+**This version of SDK is compatible with Pocketbase v0.8.0**
+
 ### PocketBase
 [Pocketbase](https://pocketbase.io) is a simple, self-hosted, open-source, no-code, database for your personal data.
 It's a great alternative to Airtable, Notion, and Google Sheets. Source code is available on [GitHub](https://github.com/pocketbase/pocketbase)

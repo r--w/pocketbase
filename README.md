@@ -58,7 +58,7 @@ import (
 func main() {
 	client := pocketbase.NewClient("http://localhost:8090", 
 		pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"))
-	response, err := client.Create("posts_public", map[string]any{
+	response, err := client.Create("posts_admin", map[string]any{
 		"field": "test",
 	})
 	if err != nil {

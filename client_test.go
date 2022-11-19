@@ -13,6 +13,8 @@ const (
 	defaultURL = "http://127.0.0.1:8090"
 )
 
+// REMEMBER to start the Pocketbase before running this example with `make serve` command
+
 func TestAuthorizeAnonymous(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -87,7 +89,7 @@ func TestListAccess(t *testing.T) {
 			} else if tt.user.email != "" {
 				c = NewClient(defaultURL, WithUserEmailPassword(tt.user.email, tt.user.password))
 			}
-			r, err := c.List(tt.collection, ListParams{})
+			r, err := c.List(tt.collection, ParamsList{})
 			assert.Equal(t, tt.wantErr, err != nil, err)
 			assert.Equal(t, tt.wantResult, r.TotalItems > 0)
 		})
@@ -147,7 +149,7 @@ func TestClient_List(t *testing.T) {
 		name       string
 		client     *Client
 		collection string
-		params     ListParams
+		params     ParamsList
 		wantResult bool
 		wantErr    bool
 	}{
@@ -162,7 +164,7 @@ func TestClient_List(t *testing.T) {
 			name:       "List no results - query",
 			client:     defaultClient,
 			collection: migrations.PostsPublic,
-			params: ListParams{
+			params: ParamsList{
 				Filters: "field='some_random_value'",
 			},
 			wantErr:    false,
@@ -172,7 +174,7 @@ func TestClient_List(t *testing.T) {
 			name:       "List no results - invalid query",
 			client:     defaultClient,
 			collection: migrations.PostsPublic,
-			params: ListParams{
+			params: ParamsList{
 				Filters: "field~~~some_random_value'",
 			},
 			wantErr:    true,
@@ -211,7 +213,7 @@ func TestClient_Delete(t *testing.T) {
 	assert.NotEmpty(t, resultCreated.ID)
 
 	// confirm item exists
-	resultList, err := client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	resultList, err := client.List(migrations.PostsPublic, ParamsList{Filters: "id='" + resultCreated.ID + "'"})
 	assert.NoError(t, err)
 	assert.Len(t, resultList.Items, 1)
 
@@ -220,7 +222,7 @@ func TestClient_Delete(t *testing.T) {
 	assert.NoError(t, err)
 
 	// confirm item does not exist
-	resultList, err = client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	resultList, err = client.List(migrations.PostsPublic, ParamsList{Filters: "id='" + resultCreated.ID + "'"})
 	assert.NoError(t, err)
 	assert.Len(t, resultList.Items, 0)
 }
@@ -243,7 +245,7 @@ func TestClient_Update(t *testing.T) {
 	assert.NotEmpty(t, resultCreated.ID)
 
 	// confirm item exists
-	resultList, err := client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	resultList, err := client.List(migrations.PostsPublic, ParamsList{Filters: "id='" + resultCreated.ID + "'"})
 	assert.NoError(t, err)
 	require.Len(t, resultList.Items, 1)
 	assert.Equal(t, field, resultList.Items[0]["field"])
@@ -255,7 +257,7 @@ func TestClient_Update(t *testing.T) {
 	assert.NoError(t, err)
 
 	// confirm changes
-	resultList, err = client.List(migrations.PostsPublic, ListParams{Filters: "id='" + resultCreated.ID + "'"})
+	resultList, err = client.List(migrations.PostsPublic, ParamsList{Filters: "id='" + resultCreated.ID + "'"})
 	assert.NoError(t, err)
 	require.Len(t, resultList.Items, 1)
 	assert.Equal(t, field+"_updated", resultList.Items[0]["field"])

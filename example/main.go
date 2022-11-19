@@ -24,7 +24,7 @@ func main() {
 	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")
 	// pocketbase.WithDebug()
 
-	response, err := client.List("posts_public", pocketbase.ListParams{
+	response, err := client.List("posts_public", pocketbase.ParamsList{
 		Size:    1,
 		Page:    1,
 		Sort:    "-created",

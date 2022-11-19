@@ -10,22 +10,64 @@ It's well-tested and used in production in [Coinpaprika](https://coinpaprika.com
 It's a great alternative to Airtable, Notion, and Google Sheets. Source code is available on [GitHub](https://github.com/pocketbase/pocketbase)
 
 ### Currently supported operations
+This SDK doesn't have feature parity with official SDKs and supports the following operations:
 
 * **Authentication** - anonymous, admin and user via email/password
 * **Create** 
 * **Update**
 * **Delete**
 * **List** - with pagination, filtering, sorting
-* **Other** - are planned to be implemented in the future after reaching 50 stars, but feel free to clone or contribute.
+* **Other** - feel free to create an issue or contribute
 
-### Usage:
+### Usage & examples
+
+Simple list example without authentication:
 ```go
-  client := pocketbase.NewClient("http://localhost:8090", "admin@admin.com", "admin@admin.com")
-  respBytes, _ := client.List("news", pocketbase.Params{Size: 2, Filters: "title~'Bitcoin'"})
-  var respParsed response
-  json.Unmarshal(respBytes, &respParsed)
-  log.Print(respParsed)
+package main
+
+import (
+	"log"
+
+	"github.com/r--w/pocketbase"
+)
+
+func main() {
+	client := pocketbase.NewClient("http://localhost:8090", pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"))
+	response, err := client.List("posts_public", pocketbase.ParamsList{
+		Page: 1, Size: 10, Sort: "-created", Filters: "field~'test'",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Print(response.TotalItems)
+}
 ```
+Creating an item with admin user. You can pass `map[string]any` or `struct with JSON tags` as a payload:
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/r--w/pocketbase"
+)
+
+func main() {
+	client := pocketbase.NewClient("http://localhost:8090", pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"))
+	response, err := client.Create("posts_public", map[string]any{
+		"field": "test",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Print(response.ID)
+}
+```
+More examples can be found in:
+* [example file](./example/main.go)
+* [tests for the client](./client_test.go)
+* remember to start the Pocketbase before running examples with `make serve` command
 
 ## Development
 
@@ -38,6 +80,7 @@ It's a great alternative to Airtable, Notion, and Google Sheets. Source code is 
 
 ## Contributing
 * Go 1.19+ (for making changes in the Go code)
+* While developing use `WithDebug()` client option to see HTTP requests and responses
 * Make sure that all checks are green (run `make check` before commit)
 * Make sure that all tests pass (run `make test` before commit)
 * Create a PR with your changes and wait for review

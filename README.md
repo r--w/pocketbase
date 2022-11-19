@@ -21,7 +21,8 @@ This SDK doesn't have feature parity with official SDKs and supports the followi
 
 ### Usage & examples
 
-Simple list example without authentication:
+Simple list example without authentication (assuming your collections are public):
+
 ```go
 package main
 
@@ -32,7 +33,7 @@ import (
 )
 
 func main() {
-	client := pocketbase.NewClient("http://localhost:8090", pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"))
+	client := pocketbase.NewClient("http://localhost:8090")
 	response, err := client.List("posts_public", pocketbase.ParamsList{
 		Page: 1, Size: 10, Sort: "-created", Filters: "field~'test'",
 	})
@@ -42,7 +43,8 @@ func main() {
 	log.Print(response.TotalItems)
 }
 ```
-Creating an item with admin user. You can pass `map[string]any` or `struct with JSON tags` as a payload:
+Creating an item with admin user (auth via email/pass). 
+Please note that you can pass `map[string]any` or `struct with JSON tags` as a payload:
 
 ```go
 package main
@@ -54,7 +56,8 @@ import (
 )
 
 func main() {
-	client := pocketbase.NewClient("http://localhost:8090", pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"))
+	client := pocketbase.NewClient("http://localhost:8090", 
+		pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"))
 	response, err := client.Create("posts_public", map[string]any{
 		"field": "test",
 	})

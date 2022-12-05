@@ -3,7 +3,7 @@ module github.com/r--w/pocketbase
 go 1.19
 
 require (
-	github.com/duke-git/lancet/v2 v2.1.10
+	github.com/duke-git/lancet/v2 v2.1.11
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.7.0

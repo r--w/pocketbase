@@ -1,11 +1,11 @@
 package pocketbase
 
-type ResponseList struct {
-	Page       int              `json:"page"`
-	PerPage    int              `json:"perPage"`
-	TotalItems int              `json:"totalItems"`
-	TotalPages int              `json:"totalPages"`
-	Items      []map[string]any `json:"items"`
+type ResponseList[T any] struct {
+	Page       int `json:"page"`
+	PerPage    int `json:"perPage"`
+	TotalItems int `json:"totalItems"`
+	TotalPages int `json:"totalPages"`
+	Items      []T `json:"items"`
 }
 
 type ResponseCreate struct {

@@ -143,8 +143,8 @@ func (c *Client) Delete(collection string, id string) error {
 	return nil
 }
 
-func (c *Client) List(collection string, params ParamsList) (ResponseList, error) {
-	var response ResponseList
+func (c *Client) List(collection string, params ParamsList) (ResponseList[map[string]any], error) {
+	var response ResponseList[map[string]any]
 
 	if err := c.Authorize(); err != nil {
 		return response, err
@@ -180,7 +180,11 @@ func (c *Client) List(collection string, params ParamsList) (ResponseList, error
 		)
 	}
 
-	if err := json.Unmarshal(resp.Body(), &response); err != nil {
+	var responseRef any = &response
+	if params.hackResponseRef != nil {
+		responseRef = params.hackResponseRef
+	}
+	if err := json.Unmarshal(resp.Body(), responseRef); err != nil {
 		return response, fmt.Errorf("[list] can't unmarshal response, err %w", err)
 	}
 	return response, nil

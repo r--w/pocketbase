@@ -71,9 +71,33 @@ func main() {
 	log.Print(response.ID)
 }
 ```
+here is some collection example
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/r--w/pocketbase"
+)
+
+func main() {
+	client := pocketbase.NewClient("http://localhost:8090")
+	collection := pocketbase.CollectionSet[map[string]any](client, "posts_public")
+	response, err := collection.List(pocketbase.ParamsList{
+		Page: 1, Size: 10, Sort: "-created", Filters: "field~'test'",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Print(response.TotalItems)
+}
+```
 More examples can be found in:
 * [example file](./example/main.go)
 * [tests for the client](./client_test.go)
+* [tests for the collection](./collection_test.go)
 * remember to start the Pocketbase before running examples with `make serve` command
 
 ## Development

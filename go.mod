@@ -3,11 +3,13 @@ module github.com/r--w/pocketbase
 go 1.19
 
 require (
+	github.com/SierraSoftworks/multicast/v2 v2.0.0
 	github.com/duke-git/lancet/v2 v2.1.11
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.8.0
 	github.com/pocketbase/pocketbase v0.9.0
+	github.com/r3labs/sse/v2 v2.9.0
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/multierr v1.8.0
 	golang.org/x/sync v0.1.0
@@ -83,6 +85,7 @@ require (
 	google.golang.org/genproto v0.0.0-20221205194025-8222ab48f5fc // indirect
 	google.golang.org/grpc v1.51.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
+	gopkg.in/cenkalti/backoff.v1 v1.1.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.40.0 // indirect

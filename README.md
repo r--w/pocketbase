@@ -92,6 +92,18 @@ func main() {
 		log.Fatal(err)
 	}
 	log.Print(response.TotalItems)
+
+	stream, err := collection.Subscribe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stream.Unsubscribe()
+	if err = stream.WaitAuthReady(); err != nil {
+		log.Fatal(err)
+	}
+	for ev := range stream.Events() {
+		log.Print(ev.Action, ev.Record)
+	}
 }
 ```
 More examples can be found in:

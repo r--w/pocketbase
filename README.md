@@ -97,9 +97,52 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("%+v", response.Items)
+	
+    log.Printf("%+v", response.Items)
 }
 ```
+
+Realtime API via Server-Sent Events (SSE) is also supported:
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/r--w/pocketbase"
+)
+
+type post struct {
+	ID      string
+	Field   string
+	Created string
+}
+
+func main() {
+	client := pocketbase.NewClient("http://localhost:8090")
+	collection := pocketbase.CollectionSet[post](client, "posts_public")
+	response, err := collection.List(pocketbase.ParamsList{
+		Page: 1, Size: 10, Sort: "-created", Filters: "field~'test'",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	stream, err := collection.Subscribe()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stream.Unsubscribe()
+	if err = stream.WaitAuthReady(); err != nil {
+		log.Fatal(err)
+	}
+	for ev := range stream.Events() {
+		log.Print(ev.Action, ev.Record)
+	}
+}
+```
+
 More examples can be found in:
 * [example file](./example/main.go)
 * [tests for the client](./client_test.go)

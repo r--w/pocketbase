@@ -71,7 +71,7 @@ func main() {
 	log.Print(response.ID)
 }
 ```
-here is some collection example
+For even easier interaction with collection results as user-defined types, you can go with `CollectionSet`:
 
 ```go
 package main
@@ -82,16 +82,23 @@ import (
 	"github.com/r--w/pocketbase"
 )
 
+type post struct {
+	ID      string
+	Field   string
+	Created string
+}
+
 func main() {
 	client := pocketbase.NewClient("http://localhost:8090")
-	collection := pocketbase.CollectionSet[map[string]any](client, "posts_public")
+	collection := pocketbase.CollectionSet[post](client, "posts_public")
 	response, err := collection.List(pocketbase.ParamsList{
 		Page: 1, Size: 10, Sort: "-created", Filters: "field~'test'",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Print(response.TotalItems)
+	
+  log.Printf("%+v", response.Items)
 
 	stream, err := collection.Subscribe()
 	if err != nil {

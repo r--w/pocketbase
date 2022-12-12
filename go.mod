@@ -7,7 +7,7 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.8.0
-	github.com/pocketbase/pocketbase v0.9.0
+	github.com/pocketbase/pocketbase v0.9.2
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/multierr v1.8.0
 	golang.org/x/sync v0.1.0
@@ -16,7 +16,7 @@ require (
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/aws/aws-sdk-go v1.44.153 // indirect
+	github.com/aws/aws-sdk-go v1.44.156 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.2 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.18.4 // indirect
@@ -67,20 +67,20 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	gocloud.dev v0.27.0 // indirect
-	golang.org/x/crypto v0.3.0 // indirect
+	golang.org/x/crypto v0.4.0 // indirect
 	golang.org/x/image v0.2.0 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.3.0 // indirect
-	golang.org/x/oauth2 v0.2.0 // indirect
+	golang.org/x/net v0.4.0 // indirect
+	golang.org/x/oauth2 v0.3.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/term v0.3.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	golang.org/x/tools v0.3.0 // indirect
+	golang.org/x/tools v0.4.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
-	google.golang.org/api v0.103.0 // indirect
+	google.golang.org/api v0.104.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20221205194025-8222ab48f5fc // indirect
+	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37 // indirect
 	google.golang.org/grpc v1.51.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

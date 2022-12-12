@@ -3,6 +3,7 @@ package pocketbase
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"sync"
 
 	"github.com/SierraSoftworks/multicast/v2"
@@ -14,9 +15,9 @@ type Event[T any] struct {
 	Record T      `json:"record"`
 }
 
-func (c Collection[T]) Subscribe(targets ...string) (stream *Stream[Event[T]], err error) {
-	if err = c.Authorize(); err != nil {
-		return
+func (c Collection[T]) Subscribe(targets ...string) (*Stream[Event[T]], error) {
+	if err := c.Authorize(); err != nil {
+		return nil, err
 	}
 
 	if len(targets) == 0 {
@@ -25,12 +26,11 @@ func (c Collection[T]) Subscribe(targets ...string) (stream *Stream[Event[T]], e
 
 	client := sse.NewClient(c.url + "/api/realtime")
 	sch := make(chan *sse.Event)
-	err = client.SubscribeChanRaw(sch)
-	if err != nil {
-		return
+	if err := client.SubscribeChanRaw(sch); err != nil {
+		return nil, err
 	}
 
-	stream = newStream[Event[T]]()
+	stream := newStream[Event[T]]()
 	stream.unsubscribe = func() { client.Unsubscribe(sch) }
 
 	handleSSEEvent := func(ev *sse.Event) {
@@ -58,7 +58,7 @@ func (c Collection[T]) Subscribe(targets ...string) (stream *Stream[Event[T]], e
 		}
 	}()
 
-	return
+	return stream, nil
 }
 
 type SubscriptionsSet struct {
@@ -76,7 +76,7 @@ func (c Collection[T]) authSubscribeStream(data []byte, targets []string) (err e
 	if err != nil {
 		return
 	}
-	if code := resp.StatusCode(); code != 204 {
+	if code := resp.StatusCode(); code != http.StatusNoContent {
 		return fmt.Errorf("auth subscribe stream failed. resp status code is %v", code)
 	}
 	return

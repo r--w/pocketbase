@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/SierraSoftworks/multicast/v2 v2.0.0
-	github.com/duke-git/lancet/v2 v2.1.11
+	github.com/duke-git/lancet/v2 v2.1.12
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.8.0

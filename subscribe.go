@@ -15,7 +15,7 @@ type Event[T any] struct {
 	Record T      `json:"record"`
 }
 
-func (c Collection[T]) Subscribe(targets ...string) (*Stream[Event[T]], error) {
+func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
 	if err := c.Authorize(); err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (c Collection[T]) Subscribe(targets ...string) (*Stream[Event[T]], error) {
 		return nil, err
 	}
 
-	stream := newStream[Event[T]]()
+	stream := newStream[T]()
 	stream.unsubscribe = func() { client.Unsubscribe(sch) }
 
 	handleSSEEvent := func(ev *sse.Event) {
@@ -83,7 +83,7 @@ func (c Collection[T]) authSubscribeStream(data []byte, targets []string) (err e
 }
 
 type Stream[T any] struct {
-	channel     *multicast.Channel[T]
+	channel     *multicast.Channel[Event[T]]
 	unsubscribe func()
 
 	onceCleanup *sync.Once
@@ -94,14 +94,14 @@ type Stream[T any] struct {
 
 func newStream[T any]() *Stream[T] {
 	return &Stream[T]{
-		channel:     multicast.New[T](),
+		channel:     multicast.New[Event[T]](),
 		onceCleanup: &sync.Once{},
 
 		firstAuthResultLocker: &sync.RWMutex{},
 	}
 }
 
-func (s *Stream[T]) Events() <-chan T {
+func (s *Stream[T]) Events() <-chan Event[T] {
 	return s.channel.Listen().C
 }
 

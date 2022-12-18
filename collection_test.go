@@ -185,3 +185,36 @@ func TestCollection_Create(t *testing.T) {
 		})
 	}
 }
+
+func TestCollection_One(t *testing.T) {
+	client := NewClient(defaultURL)
+	field := "value_" + time.Now().Format(time.StampMilli)
+	collection := Collection[map[string]any]{client, migrations.PostsPublic}
+
+	// update non-existing item
+	_, err := collection.One("non_existing_id")
+	assert.Error(t, err)
+
+	// create temporary item
+	resultCreated, err := collection.Create(map[string]any{
+		"field": field,
+	})
+	assert.NoError(t, err)
+	assert.NotEmpty(t, resultCreated.ID)
+
+	// confirm item exists
+	item, err := collection.One(resultCreated.ID)
+	assert.NoError(t, err)
+	assert.Equal(t, field, item["field"])
+
+	// update temporary item
+	err = collection.Update(resultCreated.ID, map[string]any{
+		"field": field + "_updated",
+	})
+	assert.NoError(t, err)
+
+	// confirm changes
+	item, err = collection.One(resultCreated.ID)
+	assert.NoError(t, err)
+	assert.Equal(t, field+"_updated", item["field"])
+}

@@ -4,12 +4,13 @@ go 1.19
 
 require (
 	github.com/SierraSoftworks/multicast/v2 v2.0.0
+	github.com/cenkalti/backoff/v4 v4.1.3
+	github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0
 	github.com/duke-git/lancet/v2 v2.1.12
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.8.0
 	github.com/pocketbase/pocketbase v0.10.0
-	github.com/r3labs/sse/v2 v2.9.0
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/multierr v1.9.0
 	golang.org/x/sync v0.1.0
@@ -85,7 +86,6 @@ require (
 	google.golang.org/genproto v0.0.0-20221207170731-23e4bf6bdc37 // indirect
 	google.golang.org/grpc v1.51.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
-	gopkg.in/cenkalti/backoff.v1 v1.1.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.40.0 // indirect

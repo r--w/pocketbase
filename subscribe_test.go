@@ -75,7 +75,7 @@ func TestCollection_Subscribe(t *testing.T) {
 }
 
 func TestCollection_Unsubscribe(t *testing.T) {
-	// t.Skip("skipping unsubscribe test - checking Github flaky test")
+	// t.Skip("skipping unsubscribe test - checking GitHub flaky test")
 
 	client := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
@@ -87,7 +87,7 @@ func TestCollection_Unsubscribe(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	defer stream.Unsubscribe()
+	// defer stream.Unsubscribe()
 
 	ch := stream.Events()
 
@@ -99,7 +99,7 @@ func TestCollection_Unsubscribe(t *testing.T) {
 	e := <-ch
 	assert.Equal(t, resp.ID, e.Record["id"])
 
-	stream.Unsubscribe()
+	// stream.Unsubscribe()
 
 	// if err := collection.Delete(resp.ID); err != nil {
 	// 	t.Error(err)

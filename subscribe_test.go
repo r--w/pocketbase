@@ -75,7 +75,8 @@ func TestCollection_Subscribe(t *testing.T) {
 }
 
 func TestCollection_Unsubscribe(t *testing.T) {
-	t.Skip("skipping unsubscribe test - checking github flaky test")
+	// t.Skip("skipping unsubscribe test - checking Github flaky test")
+
 	client := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
 		"field": "value_" + time.Now().Format(time.StampMilli),
@@ -99,6 +100,8 @@ func TestCollection_Unsubscribe(t *testing.T) {
 	assert.Equal(t, resp.ID, e.Record["id"])
 
 	stream.Unsubscribe()
+
+	return // TODO - remove this return when Github flaky test is fixed
 
 	if err := collection.Delete(resp.ID); err != nil {
 		t.Error(err)

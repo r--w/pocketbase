@@ -41,8 +41,8 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 	}
 
 	stream := newStream[T]()
-	ctx, cacnel := context.WithCancel(context.Background())
-	stream.unsubscribe = func() { cacnel() }
+	ctx, cancel := context.WithCancel(context.Background())
+	stream.unsubscribe = func() { cancel() }
 
 	handleSSEEvent := func(ev eventsource.Event) {
 		var e Event[T]
@@ -94,7 +94,6 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 	go func() {
 		if err := backoff.Retry(startStream(false), backoff.WithContext(opts.ReconnectStrategy, ctx)); err != nil {
 			log.Print(err)
-			stream.channel.C <- Event[T]{Error: err}
 		}
 	}()
 

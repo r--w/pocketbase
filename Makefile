@@ -27,7 +27,7 @@ format: ## Format go code with goimports
 	@goimports -l -w .
 
 test: ## Run tests
-	@go test -shuffle=on -race ./...
+	@go test -shuffle=on -race -v ./...
 
 tidy: ## Run go mod tidy
 	@go mod tidy

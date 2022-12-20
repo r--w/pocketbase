@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -91,7 +92,10 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 	}
 
 	go func() {
-		_ = backoff.Retry(startStream(false), backoff.WithContext(opts.ReconnectStrategy, ctx))
+		if err := backoff.Retry(startStream(false), backoff.WithContext(opts.ReconnectStrategy, ctx)); err != nil {
+			log.Print(err)
+			stream.channel.C <- Event[T]{Error: err}
+		}
 	}()
 
 	return stream, nil

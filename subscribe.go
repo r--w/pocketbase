@@ -13,6 +13,7 @@ import (
 type Event[T any] struct {
 	Action string `json:"action"`
 	Record T      `json:"record"`
+	Error  error  `json:"-"`
 }
 
 func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
@@ -35,9 +36,7 @@ func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
 
 	handleSSEEvent := func(ev *sse.Event) {
 		var e Event[T]
-		if err := json.Unmarshal(ev.Data, &e); err != nil {
-			return
-		}
+		e.Error = json.Unmarshal(ev.Data, &e)
 		stream.channel.C <- e
 	}
 

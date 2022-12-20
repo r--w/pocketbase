@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCollection_Subcribe(t *testing.T) {
+func TestCollection_Subscribe(t *testing.T) {
 	client := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
 		"field": "value_" + time.Now().Format(time.StampMilli),
@@ -74,7 +74,7 @@ func TestCollection_Subcribe(t *testing.T) {
 	})
 }
 
-func TestCollection_Unsubcribe(t *testing.T) {
+func TestCollection_Unsubscribe(t *testing.T) {
 	client := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
 		"field": "value_" + time.Now().Format(time.StampMilli),

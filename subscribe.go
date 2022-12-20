@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/SierraSoftworks/multicast/v2"
 	"github.com/cenkalti/backoff/v4"
@@ -19,6 +20,17 @@ type Event[T any] struct {
 }
 
 func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
+	opts := SubscribeOptions{
+		ReconnectStrategy: backoff.NewConstantBackOff(time.Second),
+	}
+	return c.SubscribeWith(opts, targets...)
+}
+
+type SubscribeOptions struct {
+	ReconnectStrategy backoff.BackOff
+}
+
+func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (*Stream[T], error) {
 	if err := c.Authorize(); err != nil {
 		return nil, err
 	}
@@ -79,7 +91,7 @@ func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
 	}
 
 	go func() {
-		_ = backoff.Retry(startStream(false), backoff.WithContext(&backoff.ZeroBackOff{}, ctx))
+		_ = backoff.Retry(startStream(false), backoff.WithContext(opts.ReconnectStrategy, ctx))
 	}()
 
 	return stream, nil

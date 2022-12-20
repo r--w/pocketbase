@@ -101,16 +101,14 @@ func TestCollection_Unsubscribe(t *testing.T) {
 
 	stream.Unsubscribe()
 
-	return // TODO - remove this return when Github flaky test is fixed
-
-	if err := collection.Delete(resp.ID); err != nil {
-		t.Error(err)
-		return
-	}
-
-	if _, ok := <-ch; ok {
-		t.Error("unsubscribe is not working.")
-	}
+	// if err := collection.Delete(resp.ID); err != nil {
+	// 	t.Error(err)
+	// 	return
+	// }
+	//
+	// if _, ok := <-ch; ok {
+	// 	t.Error("unsubscribe is not working.")
+	// }
 }
 
 func TestCollection_RealtimeReconnect(t *testing.T) {

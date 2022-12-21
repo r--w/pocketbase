@@ -75,7 +75,6 @@ func TestCollection_Subscribe(t *testing.T) {
 }
 
 func TestCollection_Unsubscribe(t *testing.T) {
-
 	client := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
 		"field": "value_" + time.Now().Format(time.StampMilli),

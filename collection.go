@@ -34,7 +34,7 @@ func (c Collection[T]) List(params ParamsList) (ResponseList[T], error) {
 	return response, err
 }
 
-func (c Collection[T]) One(id string) (T, error) {
+func (c Collection[T]) One(id string, params ParamsOne) (T, error) {
 	var response T
 
 	if err := c.Authorize(); err != nil {
@@ -45,6 +45,10 @@ func (c Collection[T]) One(id string) (T, error) {
 		SetHeader("Content-Type", "application/json").
 		SetPathParam("collection", c.Name).
 		SetPathParam("id", id)
+
+	if params.Expand != "" {
+		request.SetQueryParam("expand", params.Expand)
+	}
 
 	resp, err := request.Get(c.url + "/api/collections/{collection}/records/{id}")
 	if err != nil {

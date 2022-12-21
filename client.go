@@ -166,6 +166,9 @@ func (c *Client) List(collection string, params ParamsList) (ResponseList[map[st
 	if params.Sort != "" {
 		request.SetQueryParam("sort", params.Sort)
 	}
+	if params.Expand != "" {
+		request.SetQueryParam("expand", params.Expand)
+	}
 
 	resp, err := request.Get(c.url + "/api/collections/{collection}/records")
 	if err != nil {

@@ -192,7 +192,7 @@ func TestCollection_One(t *testing.T) {
 	collection := Collection[map[string]any]{client, migrations.PostsPublic}
 
 	// update non-existing item
-	_, err := collection.One("non_existing_id")
+	_, err := collection.One("non_existing_id", ParamsOne{})
 	assert.Error(t, err)
 
 	// create temporary item
@@ -203,7 +203,7 @@ func TestCollection_One(t *testing.T) {
 	assert.NotEmpty(t, resultCreated.ID)
 
 	// confirm item exists
-	item, err := collection.One(resultCreated.ID)
+	item, err := collection.One(resultCreated.ID, ParamsOne{})
 	assert.NoError(t, err)
 	assert.Equal(t, field, item["field"])
 
@@ -214,7 +214,7 @@ func TestCollection_One(t *testing.T) {
 	assert.NoError(t, err)
 
 	// confirm changes
-	item, err = collection.One(resultCreated.ID)
+	item, err = collection.One(resultCreated.ID, ParamsOne{})
 	assert.NoError(t, err)
 	assert.Equal(t, field+"_updated", item["field"])
 }

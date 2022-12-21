@@ -135,9 +135,7 @@ func main() {
 		log.Fatal(err)
 	}
 	defer stream.Unsubscribe()
-	if err = stream.WaitAuthReady(); err != nil {
-		log.Fatal(err)
-	}
+	<-stream.Ready()
 	for ev := range stream.Events() {
 		log.Print(ev.Action, ev.Record)
 	}

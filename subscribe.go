@@ -1,13 +1,16 @@
 package pocketbase
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 
 	"github.com/SierraSoftworks/multicast/v2"
-	"github.com/r3labs/sse/v2"
+	"github.com/cenkalti/backoff/v4"
+	"github.com/donovanhide/eventsource"
 )
 
 type Event[T any] struct {
@@ -17,6 +20,17 @@ type Event[T any] struct {
 }
 
 func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
+	opts := SubscribeOptions{
+		ReconnectStrategy: &backoff.ZeroBackOff{},
+	}
+	return c.SubscribeWith(opts, targets...)
+}
+
+type SubscribeOptions struct {
+	ReconnectStrategy backoff.BackOff
+}
+
+func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (*Stream[T], error) {
 	if err := c.Authorize(); err != nil {
 		return nil, err
 	}
@@ -25,35 +39,65 @@ func (c Collection[T]) Subscribe(targets ...string) (*Stream[T], error) {
 		targets = []string{c.Name}
 	}
 
-	client := sse.NewClient(c.url + "/api/realtime")
-	sch := make(chan *sse.Event)
-	if err := client.SubscribeChanRaw(sch); err != nil {
-		return nil, err
-	}
-
 	stream := newStream[T]()
-	stream.unsubscribe = func() { client.Unsubscribe(sch) }
+	ctx, cancel := context.WithCancel(context.Background())
+	stream.unsubscribe = func() { cancel() }
 
-	handleSSEEvent := func(ev *sse.Event) {
+	handleSSEEvent := func(ev eventsource.Event) {
 		var e Event[T]
-		e.Error = json.Unmarshal(ev.Data, &e)
+		e.Error = json.Unmarshal([]byte(ev.Data()), &e)
 		stream.channel.C <- e
 	}
 
 	once := &sync.Once{}
-	stream.firstAuthResultLocker.Lock()
-	go func() {
-		for ev := range sch {
-			switch string(ev.Event) {
-			case "PB_CONNECT":
-				err := c.authSubscribeStream(ev.Data, targets)
-				once.Do(func() {
-					defer stream.firstAuthResultLocker.Unlock()
-					stream.firstAuthResult = err
-				})
-			default:
-				go handleSSEEvent(ev)
+	stream.ready.Lock()
+	startStream := func(check bool) func() error {
+		return func() (err error) {
+			req := c.client.R().SetContext(ctx).SetDoNotParseResponse(true)
+			resp, err := req.Get(c.url + "/api/realtime")
+			defer resp.RawBody().Close()
+			if err != nil {
+				return
 			}
+
+			d := eventsource.NewDecoder(resp.RawBody())
+
+			ev, err := d.Decode()
+			if err != nil {
+				return err
+			}
+			if event := ev.Event(); event != "PB_CONNECT" {
+				return fmt.Errorf("first event must be PB_CONNECT, but got %s", event)
+			}
+
+			if err := c.authSubscribeStream([]byte(ev.Data()), targets); err != nil {
+				return err
+			}
+
+			if !check {
+				once.Do(func() {
+					stream.ready.Unlock()
+				})
+				for {
+					ev, err := d.Decode()
+					if err != nil {
+						return err
+					}
+					go handleSSEEvent(ev)
+				}
+			}
+
+			return nil
+		}
+	}
+
+	if err := startStream(true)(); err != nil {
+		return nil, err
+	}
+
+	go func() {
+		if err := backoff.Retry(startStream(false), backoff.WithContext(opts.ReconnectStrategy, ctx)); err != nil {
+			log.Print(err)
 		}
 	}()
 
@@ -85,18 +129,15 @@ type Stream[T any] struct {
 	channel     *multicast.Channel[Event[T]]
 	unsubscribe func()
 
+	ready       *sync.RWMutex
 	onceCleanup *sync.Once
-
-	firstAuthResultLocker *sync.RWMutex
-	firstAuthResult       error
 }
 
 func newStream[T any]() *Stream[T] {
 	return &Stream[T]{
 		channel:     multicast.New[Event[T]](),
+		ready:       &sync.RWMutex{},
 		onceCleanup: &sync.Once{},
-
-		firstAuthResultLocker: &sync.RWMutex{},
 	}
 }
 
@@ -111,8 +152,19 @@ func (s *Stream[T]) Unsubscribe() {
 	})
 }
 
+// Deprecated: use <-stream.Ready() instead of
 func (s *Stream[T]) WaitAuthReady() error {
-	s.firstAuthResultLocker.RLock()
-	defer s.firstAuthResultLocker.RUnlock()
-	return s.firstAuthResult
+	s.ready.RLock()
+	defer s.ready.RUnlock()
+	return nil
+}
+
+func (s *Stream[T]) Ready() <-chan struct{} {
+	readyCh := make(chan struct{})
+	go func() {
+		s.ready.RLock()
+		defer s.ready.RUnlock()
+		close(readyCh)
+	}()
+	return readyCh
 }

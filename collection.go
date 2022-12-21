@@ -3,15 +3,22 @@ package pocketbase
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 )
 
 type Collection[T any] struct {
 	*Client
 	Name string
+
+	Expand string
 }
 
 func CollectionSet[T any](client *Client, collection string) Collection[T] {
-	return Collection[T]{client, collection}
+	return Collection[T]{
+		Client: client, Name: collection,
+
+		Expand: getExpandParams[T](),
+	}
 }
 
 func (c Collection[T]) Update(id string, body T) error {
@@ -28,6 +35,9 @@ func (c Collection[T]) Delete(id string) error {
 
 func (c Collection[T]) List(params ParamsList) (ResponseList[T], error) {
 	var response ResponseList[T]
+	if params.Expand == "" {
+		params.Expand = c.Expand
+	}
 	params.hackResponseRef = &response
 
 	_, err := c.Client.List(c.Name, params)
@@ -46,6 +56,10 @@ func (c Collection[T]) One(id string) (T, error) {
 		SetPathParam("collection", c.Name).
 		SetPathParam("id", id)
 
+	if c.Expand != "" {
+		request.SetQueryParam("expand", c.Expand)
+	}
+
 	resp, err := request.Get(c.url + "/api/collections/{collection}/records/{id}")
 	if err != nil {
 		return response, fmt.Errorf("[one] can't send update request to pocketbase, err %w", err)
@@ -63,4 +77,16 @@ func (c Collection[T]) One(id string) (T, error) {
 		return response, fmt.Errorf("[one] can't unmarshal response, err %w", err)
 	}
 	return response, nil
+}
+
+func getExpandParams[T any]() string {
+	elem := reflect.TypeOf((*T)(nil)).Elem()
+	if elem.Kind() != reflect.Struct {
+		return ""
+	}
+	f, ok := elem.FieldByName("Expand")
+	if !ok {
+		return ""
+	}
+	return f.Tag.Get("pbex")
 }

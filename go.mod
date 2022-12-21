@@ -11,7 +11,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.8.0
 	github.com/pocketbase/pocketbase v0.10.2
-	github.com/r3labs/sse/v2 v2.9.0
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/multierr v1.9.0
 	golang.org/x/sync v0.1.0

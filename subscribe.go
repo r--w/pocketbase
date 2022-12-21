@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -74,7 +75,7 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 			}
 
 			if !check {
-				fmt.Println("loop")
+				fmt.Fprint(os.Stdout, "loop")
 				for {
 					ev, err := d.Decode()
 					if err != nil {

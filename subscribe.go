@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"sync"
 	"time"
 
@@ -51,6 +50,8 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 		stream.channel.C <- e
 	}
 
+	var readyOnce sync.Once
+	var readyCh = make(chan struct{})
 	startStream := func(check bool) func() error {
 		return func() (err error) {
 			req := c.client.R().SetContext(ctx).SetDoNotParseResponse(true)
@@ -75,7 +76,9 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 			}
 
 			if !check {
-				fmt.Fprint(os.Stdout, "loop")
+				readyOnce.Do(func() {
+					close(readyCh)
+				})
 				for {
 					ev, err := d.Decode()
 					if err != nil {
@@ -98,6 +101,7 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 			log.Print(err)
 		}
 	}()
+	<-readyCh
 
 	return stream, nil
 }

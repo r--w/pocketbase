@@ -87,8 +87,6 @@ func TestCollection_Unsubscribe(t *testing.T) {
 		return
 	}
 
-	_ = defaultBody
-
 	ch := stream.Events()
 
 	var resp ResponseCreate

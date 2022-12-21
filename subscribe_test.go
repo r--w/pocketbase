@@ -75,10 +75,6 @@ func TestCollection_Subscribe(t *testing.T) {
 }
 
 func TestCollection_Unsubscribe(t *testing.T) {
-	if true {
-		t.Skip("skipping unsubscribe test - checking GitHub flaky test")
-		return
-	}
 
 	client := NewClient(defaultURL)
 	defaultBody := map[string]interface{}{
@@ -90,30 +86,32 @@ func TestCollection_Unsubscribe(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	_, _ = defaultBody, stream // TODO remove this
 
-	// defer stream.Unsubscribe()
+	_ = defaultBody
 
-	// ch := stream.Events()
-	//
-	// resp, err := collection.Create(defaultBody)
-	// if err != nil {
-	// 	t.Error(err)
-	// 	return
-	// }
-	// e := <-ch
-	// assert.Equal(t, resp.ID, e.Record["id"])
+	ch := stream.Events()
 
-	// stream.Unsubscribe()
+	var resp ResponseCreate
+	resp, err = collection.Create(defaultBody)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	e := <-ch
+	assert.Equal(t, resp.ID, e.Record["id"])
 
-	// if err := collection.Delete(resp.ID); err != nil {
-	// 	t.Error(err)
-	// 	return
-	// }
-	//
-	// if _, ok := <-ch; ok {
-	// 	t.Error("unsubscribe is not working.")
-	// }
+	stream.Unsubscribe()
+
+	if err := collection.Delete(resp.ID); err != nil {
+		t.Error(err)
+		return
+	}
+
+	if e, ok := <-ch; ok {
+		t.Error("unsubscribe is not working.")
+	} else {
+		t.Log(e, ok)
+	}
 }
 
 func TestCollection_RealtimeReconnect(t *testing.T) {

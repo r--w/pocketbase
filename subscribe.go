@@ -74,6 +74,7 @@ func (c Collection[T]) SubscribeWith(opts SubscribeOptions, targets ...string) (
 			}
 
 			if !check {
+				fmt.Println("loop")
 				for {
 					ev, err := d.Decode()
 					if err != nil {

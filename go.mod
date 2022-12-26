@@ -10,8 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.8.0
-	github.com/pocketbase/pocketbase v0.10.2
-	github.com/r3labs/sse/v2 v2.9.0
+	github.com/pocketbase/pocketbase v0.10.4
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/multierr v1.9.0
 	golang.org/x/sync v0.1.0
@@ -20,13 +19,13 @@ require (
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20210307081110-f21760c49a8d // indirect
-	github.com/aws/aws-sdk-go v1.44.161 // indirect
+	github.com/aws/aws-sdk-go v1.44.165 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.3 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.10 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.18.5 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.5 // indirect
+	github.com/aws/aws-sdk-go-v2/config v1.18.7 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.7 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.21 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.44 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.46 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.27 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.21 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.28 // indirect
@@ -36,13 +35,14 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.21 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.13.21 // indirect
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.29.6 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.11.27 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.13.10 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.11.28 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.13.11 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.17.7 // indirect
 	github.com/aws/smithy-go v1.13.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/domodwyer/mailyak/v3 v3.3.4 // indirect
+	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.1 // indirect
 	github.com/ganigeorgiev/fexpr v0.1.1 // indirect
@@ -91,7 +91,7 @@ require (
 	lukechampine.com/uint128 v1.2.0 // indirect
 	modernc.org/cc/v3 v3.40.0 // indirect
 	modernc.org/ccgo/v3 v3.16.13 // indirect
-	modernc.org/libc v1.21.5 // indirect
+	modernc.org/libc v1.22.2 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/opt v0.1.3 // indirect

@@ -9,7 +9,7 @@ require (
 	github.com/duke-git/lancet/v2 v2.1.13
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
-	github.com/pocketbase/dbx v1.8.0
+	github.com/pocketbase/dbx v1.9.0
 	github.com/pocketbase/pocketbase v0.10.2
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/multierr v1.9.0

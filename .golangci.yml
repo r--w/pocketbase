@@ -16,6 +16,7 @@ linters:
     - gosimple
     - govet
     - nilerr
+    - nolintlint
     - predeclared
     - revive
     - staticcheck

@@ -1,12 +1,12 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"time"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/r--w/pocketbase"
-	"go.uber.org/multierr"
 )
 
 type Post struct {
@@ -17,7 +17,7 @@ type Post struct {
 func main() {
 	// REMEMBER to start the Pocketbase before running this example with `make serve` command
 
-	var errors error
+	var errs error
 	client := pocketbase.NewClient("http://localhost:8090")
 	// Other configuration options:
 	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
@@ -30,13 +30,14 @@ func main() {
 		Sort:    "-created",
 		Filters: "field~'test'",
 	})
-	errors = multierr.Append(errors, err)
+
+	errs = errors.Join(errs, err)
 
 	log.Printf("Total items: %d, total pages: %d\n", response.TotalItems, response.TotalPages)
 	for _, item := range response.Items {
 		var test Post
 		err := mapstructure.Decode(item, &test)
-		errors = multierr.Append(errors, err)
+		errs = errors.Join(errs, err)
 
 		log.Printf("Item: %#v\n", test)
 	}
@@ -46,18 +47,18 @@ func main() {
 	_, err = client.Create("posts_public", Post{
 		Field: "test_" + time.Now().Format(time.Stamp),
 	})
-	errors = multierr.Append(errors, err)
+	errs = errors.Join(errs, err)
 
 	// or you can use simple map[string]any
 	r, err := client.Create("posts_public", map[string]any{
 		"field": "test_" + time.Now().Format(time.Stamp),
 	})
-	errors = multierr.Append(errors, err)
+	errs = errors.Join(errs, err)
 
 	err = client.Delete("posts_public", r.ID)
-	errors = multierr.Append(errors, err)
+	errs = errors.Join(errs, err)
 
-	if errors != nil {
-		log.Fatal(errors)
+	if errs != nil {
+		log.Fatal(errs)
 	}
 }

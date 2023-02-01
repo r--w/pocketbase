@@ -159,7 +159,7 @@ More examples can be found in:
 * `make help` - shows help and other targets
 
 ## Contributing
-* Go 1.19+ (for making changes in the Go code)
+* Go 1.20+ (for making changes in the Go code)
 * While developing use `WithDebug()` client option to see HTTP requests and responses
 * Make sure that all checks are green (run `make check` before commit)
 * Make sure that all tests pass (run `make test` before commit)

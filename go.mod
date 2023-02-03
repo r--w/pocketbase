@@ -10,7 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.7.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pocketbase/dbx v1.9.0
-	github.com/pocketbase/pocketbase v0.12.1
+	github.com/pocketbase/pocketbase v0.12.2
 	github.com/stretchr/testify v1.8.1
 	golang.org/x/sync v0.1.0
 )

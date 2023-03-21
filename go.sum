@@ -822,8 +822,8 @@ github.com/domodwyer/mailyak/v3 v3.4.0 h1:U9U9ctj+F8AmW5qT6ZJMwA/6INqsmvR7nOhPUS
 github.com/domodwyer/mailyak/v3 v3.4.0/go.mod h1:lOm/u9CyCVWHeaAmHIdF4RiKVxKUT/H5XX10lIKAL6c=
 github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0 h1:C7t6eeMaEQVy6e8CarIhscYQlNmw5e3G36y7l7Y21Ao=
 github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0/go.mod h1:56wL82FO0bfMU5RvfXoIwSOP2ggqqxT+tAfNEIyxuHw=
-github.com/duke-git/lancet/v2 v2.1.16 h1:GS486MyBb1wO97RHIjRPZZZuAhwe6qm83gO6Xi0RZv8=
-github.com/duke-git/lancet/v2 v2.1.16/go.mod h1:hNcc06mV7qr+crH/0nP+rlC3TB0Q9g5OrVnO8/TGD4c=
+github.com/duke-git/lancet/v2 v2.1.17 h1:4u9oAGgmTPTt2D7AcjjLp0ubbcaQlova8xeTIuyupDw=
+github.com/duke-git/lancet/v2 v2.1.17/go.mod h1:hNcc06mV7qr+crH/0nP+rlC3TB0Q9g5OrVnO8/TGD4c=
 github.com/dustin/go-humanize v0.0.0-20171111073723-bb3d318650d4/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/dustin/go-humanize v1.0.1 h1:GzkhY7T5VNhEkwH0PVJgjz+fX1rhBrR7pRT3mDkpeCY=

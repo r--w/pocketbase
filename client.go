@@ -58,8 +58,18 @@ func WithUserEmailPassword(email, password string) ClientOption {
 	}
 }
 
+func WithAPIKey(token string) ClientOption {
+	return func(c *Client) {
+		c.authorizer = newAuthorizationRefresh(c.client, c.url+"/api/collections/users/auth-refresh", token)
+	}
+}
+
 func (c *Client) Authorize() error {
 	return c.authorizer.authorize()
+}
+
+func (c *Client) AuthRefresh() error {
+	return c.authorizer.refresh()
 }
 
 func (c *Client) Update(collection string, id string, body any) error {

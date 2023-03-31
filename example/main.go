@@ -18,7 +18,10 @@ func main() {
 	// REMEMBER to start the Pocketbase before running this example with `make serve` command
 
 	var errs error
-	client := pocketbase.NewClient("http://localhost:8090")
+	client := pocketbase.NewClient("http://localhost:8090",
+		pocketbase.WithDebug(),
+		pocketbase.WithAdminEmailPassword("example@mail.com", "1234567890"),
+	)
 	// Other configuration options:
 	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
 	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")

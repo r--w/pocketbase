@@ -62,6 +62,7 @@ func (c *Client) Authorize() error {
 	return c.authorizer.authorize()
 }
 
+
 func (c *Client) Update(collection string, id string, body any) error {
 	if err := c.Authorize(); err != nil {
 		return err

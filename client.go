@@ -58,7 +58,7 @@ func WithUserEmailPassword(email, password string) ClientOption {
 	}
 }
 
-func WithAPIKey(token string) ClientOption {
+func WithToken(token string) ClientOption {
 	return func(c *Client) {
 		c.authorizer = newAuthorizationRefresh(c.client, c.url+"/api/collections/users/auth-refresh", token)
 	}
@@ -68,8 +68,28 @@ func (c *Client) Authorize() error {
 	return c.authorizer.authorize()
 }
 
-func (c *Client) AuthRefresh() error {
-	return c.authorizer.refresh()
+func (c *Client) AuthRefresh() (string, error) {
+	type authResponse struct {
+		Token string `json:"token"`
+	}
+	var result authResponse
+	resp, err := c.client.R().
+		SetResult(result).
+		SetHeader("Content-Type", "application/json").
+		Post(c.url + "/api/admins/auth-refresh")
+	if err != nil {
+		return "", fmt.Errorf("[auth-refresh] can't send auth request to pocketbase, err %w", err)
+	}
+	if resp.IsError() {
+		return "", fmt.Errorf("[auth-refresh] pocketbase returned status: %d, msg: %s, err %w",
+			resp.StatusCode(),
+			resp.String(),
+			ErrInvalidResponse,
+		)
+	}
+	c.authorizer.(*authorizeEmailPassword).client.SetHeader("Authorization", result.Token)
+	c.authorizer.(*authorizeEmailPassword).tokenValid = time.Now().Add(60 * time.Minute)
+	return result.Token, nil
 }
 
 func (c *Client) Update(collection string, id string, body any) error {

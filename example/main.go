@@ -16,23 +16,16 @@ type Post struct {
 
 func main() {
 	// REMEMBER to start the Pocketbase before running this example with `make serve` command
+
 	var errs error
-	client := pocketbase.NewClient("http://localhost:8090",
-		pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com"),
-		pocketbase.WithDebug(),
-	)
-
-	client.Authorize()
-
-	client = pocketbase.NewClient("http://localhost:8090",
-		pocketbase.WithAdminToken(client.AuthStore().Token()),
-		pocketbase.WithDebug(),
-	)
-
+	client := pocketbase.NewClient("http://localhost:8090")
 	// Other configuration options:
 	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
 	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")
+	// pocketbase.WithUserToken(token)
+	// pocketbase.WithAdminToken(token)
 	// pocketbase.WithDebug()
+
 	response, err := client.List("posts_public", pocketbase.ParamsList{
 		Size:    1,
 		Page:    1,

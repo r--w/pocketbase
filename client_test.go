@@ -142,6 +142,73 @@ func TestAuthorizeEmailPassword(t *testing.T) {
 	}
 }
 
+func TestAuthorizeToken(t *testing.T) {
+	tests := []struct {
+		name       string
+		validToken bool
+		admin      bool
+		user       bool
+		wantErr    bool
+	}{
+		{
+			name:       "Valid token admin",
+			validToken: true,
+			admin:      true,
+			wantErr:    false,
+		},
+		{
+			name:       "Invalid token admin",
+			validToken: false,
+			admin:      true,
+			wantErr:    true,
+		},
+		{
+			name:       "Valid token user",
+			validToken: true,
+			user:       true,
+			wantErr:    false,
+		},
+		{
+			name:       "Invalid token user",
+			validToken: false,
+			user:       true,
+			wantErr:    true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c := NewClient(defaultURL)
+			if tt.admin {
+				var token string
+				if tt.validToken {
+					c = NewClient(defaultURL,
+						WithAdminEmailPassword(migrations.AdminEmailPassword, migrations.AdminEmailPassword),
+					)
+					c.Authorize()
+					token = c.AuthStore().Token()
+				} else {
+					token = "invalid_token"
+				}
+				c = NewClient(defaultURL, WithAdminToken(token))
+			} else if tt.user {
+				var token string
+				if tt.validToken {
+					c = NewClient(defaultURL,
+						WithUserEmailPassword(migrations.UserEmailPassword, migrations.UserEmailPassword),
+					)
+					c.Authorize()
+					token = c.AuthStore().Token()
+				} else {
+					token = "invalid_token"
+				}
+				c = NewClient(defaultURL, WithUserToken(token))
+			}
+			err := c.Authorize()
+			assert.Equal(t, tt.wantErr, err != nil)
+		})
+	}
+}
+
 func TestClient_List(t *testing.T) {
 	defaultClient := NewClient(defaultURL)
 

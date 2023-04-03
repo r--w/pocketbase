@@ -16,7 +16,7 @@ type (
 	Client struct {
 		client     *resty.Client
 		url        string
-		authorizer authorizer
+		authorizer authStore
 	}
 	ClientOption func(*Client)
 )
@@ -58,38 +58,20 @@ func WithUserEmailPassword(email, password string) ClientOption {
 	}
 }
 
-func WithToken(token string) ClientOption {
+func WithAdminToken(token string) ClientOption {
 	return func(c *Client) {
-		c.authorizer = newAuthorizationRefresh(c.client, c.url+"/api/collections/users/auth-refresh", token)
+		c.authorizer = newAuthorizeToken(c.client, c.url+"/api/admins/auth-refresh", token)
+	}
+}
+
+func WithUserToken(token string) ClientOption {
+	return func(c *Client) {
+		c.authorizer = newAuthorizeToken(c.client, c.url+"/api/collections/users/auth-refresh", token)
 	}
 }
 
 func (c *Client) Authorize() error {
 	return c.authorizer.authorize()
-}
-
-func (c *Client) AuthRefresh() (string, error) {
-	type authResponse struct {
-		Token string `json:"token"`
-	}
-	var result authResponse
-	resp, err := c.client.R().
-		SetResult(result).
-		SetHeader("Content-Type", "application/json").
-		Post(c.url + "/api/admins/auth-refresh")
-	if err != nil {
-		return "", fmt.Errorf("[auth-refresh] can't send auth request to pocketbase, err %w", err)
-	}
-	if resp.IsError() {
-		return "", fmt.Errorf("[auth-refresh] pocketbase returned status: %d, msg: %s, err %w",
-			resp.StatusCode(),
-			resp.String(),
-			ErrInvalidResponse,
-		)
-	}
-	c.authorizer.(*authorizeEmailPassword).client.SetHeader("Authorization", result.Token)
-	c.authorizer.(*authorizeEmailPassword).tokenValid = time.Now().Add(60 * time.Minute)
-	return result.Token, nil
 }
 
 func (c *Client) Update(collection string, id string, body any) error {
@@ -218,4 +200,8 @@ func (c *Client) List(collection string, params ParamsList) (ResponseList[map[st
 		return response, fmt.Errorf("[list] can't unmarshal response, err %w", err)
 	}
 	return response, nil
+}
+
+func (c *Client) AuthStore() authStore {
+	return c.authorizer
 }

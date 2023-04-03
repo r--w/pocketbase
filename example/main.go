@@ -23,20 +23,16 @@ func main() {
 	)
 
 	client.Authorize()
-	_, err := client.AuthRefresh()
-	if err != nil {
-		log.Fatal(err)
-	}
+
+	client = pocketbase.NewClient("http://localhost:8090",
+		pocketbase.WithAdminToken(client.AuthStore().Token()),
+		pocketbase.WithDebug(),
+	)
+
 	// Other configuration options:
 	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
 	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")
 	// pocketbase.WithDebug()
-	/*
-		client = pocketbase.NewClient("http://localhost:8090",
-			pocketbase.WithDebug(),
-			pocketbase.WithToken(token),
-		)
-	*/
 	response, err := client.List("posts_public", pocketbase.ParamsList{
 		Size:    1,
 		Page:    1,

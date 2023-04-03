@@ -8,6 +8,12 @@ import (
 	"golang.org/x/sync/singleflight"
 )
 
+type authStore interface {
+	authorizer
+	IsValid() bool
+	Token() string
+}
+
 type authorizer interface {
 	authorize() error
 }
@@ -18,29 +24,29 @@ func (a authorizeNoOp) authorize() error {
 	return nil
 }
 
+func (a authorizeNoOp) IsValid() bool {
+	return false
+}
+
+func (a authorizeNoOp) Token() string {
+	return ""
+}
+
 type authorizeEmailPassword struct {
 	email       string
 	password    string
+	token       string
 	tokenValid  time.Time
 	client      *resty.Client
 	url         string
 	tokenSingle singleflight.Group
 }
 
-func newAuthorizeEmailPassword(c *resty.Client, url string, email string, password string) authorizer {
+func newAuthorizeEmailPassword(c *resty.Client, url string, email string, password string) authStore {
 	return &authorizeEmailPassword{
 		client:      c,
 		email:       email,
 		password:    password,
-		url:         url,
-		tokenSingle: singleflight.Group{},
-	}
-}
-
-func newAuthorizationRefresh(c *resty.Client, url string, token string) authorizer {
-	c.SetHeader("Authorization", token)
-	return &authorizeEmailPassword{
-		client:      c,
 		url:         url,
 		tokenSingle: singleflight.Group{},
 	}
@@ -79,10 +85,19 @@ func (a *authorizeEmailPassword) authorize() error {
 		}
 
 		auth := *resp.Result().(*authResponse)
+		a.token = auth.Token
 		a.client.SetHeader("Authorization", auth.Token)
 		a.tokenValid = time.Now().Add(60 * time.Minute)
 
 		return nil, nil
 	})
 	return err
+}
+
+func (a *authorizeEmailPassword) IsValid() bool {
+	return time.Now().Before(a.tokenValid)
+}
+
+func (a *authorizeEmailPassword) Token() string {
+	return a.token
 }

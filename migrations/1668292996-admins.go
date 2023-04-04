@@ -38,11 +38,8 @@ func init() {
 		if err := admin.SetPassword(AdminEmailPassword); err != nil {
 			return err
 		}
-		if err := dao.SaveAdmin(&admin); err != nil {
-			return err
-		}
 
-		return nil
+		return dao.SaveAdmin(&admin)
 	}, func(db dbx.Builder) error {
 		return nil
 	})

@@ -184,7 +184,7 @@ func TestAuthorizeToken(t *testing.T) {
 					c = NewClient(defaultURL,
 						WithAdminEmailPassword(migrations.AdminEmailPassword, migrations.AdminEmailPassword),
 					)
-					c.Authorize()
+					_ = c.Authorize()
 					token = c.AuthStore().Token()
 				} else {
 					token = "invalid_token"
@@ -196,7 +196,7 @@ func TestAuthorizeToken(t *testing.T) {
 					c = NewClient(defaultURL,
 						WithUserEmailPassword(migrations.UserEmailPassword, migrations.UserEmailPassword),
 					)
-					c.Authorize()
+					_ = c.Authorize()
 					token = c.AuthStore().Token()
 				} else {
 					token = "invalid_token"

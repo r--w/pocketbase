@@ -50,11 +50,7 @@ func init() {
 			return err
 		}
 
-		if err := dao.SaveRecord(r); err != nil {
-			return err
-		}
-
-		return nil
+		return dao.SaveRecord(r)
 	}, func(db dbx.Builder) error {
 		return nil
 	})

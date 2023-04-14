@@ -22,6 +22,8 @@ func main() {
 	// Other configuration options:
 	// pocketbase.WithAdminEmailPassword("admin@admin.com", "admin@admin.com")
 	// pocketbase.WithUserEmailPassword("user@user.com", "user@user.com")
+	// pocketbase.WithUserToken(token)
+	// pocketbase.WithAdminToken(token)
 	// pocketbase.WithDebug()
 
 	response, err := client.List("posts_public", pocketbase.ParamsList{

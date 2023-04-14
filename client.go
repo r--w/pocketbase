@@ -16,7 +16,7 @@ type (
 	Client struct {
 		client     *resty.Client
 		url        string
-		authorizer authorizer
+		authorizer authStore
 	}
 	ClientOption func(*Client)
 )
@@ -55,6 +55,18 @@ func WithAdminEmailPassword(email, password string) ClientOption {
 func WithUserEmailPassword(email, password string) ClientOption {
 	return func(c *Client) {
 		c.authorizer = newAuthorizeEmailPassword(c.client, c.url+"/api/collections/users/auth-with-password", email, password)
+	}
+}
+
+func WithAdminToken(token string) ClientOption {
+	return func(c *Client) {
+		c.authorizer = newAuthorizeToken(c.client, c.url+"/api/admins/auth-refresh", token)
+	}
+}
+
+func WithUserToken(token string) ClientOption {
+	return func(c *Client) {
+		c.authorizer = newAuthorizeToken(c.client, c.url+"/api/collections/users/auth-refresh", token)
 	}
 }
 
@@ -188,4 +200,8 @@ func (c *Client) List(collection string, params ParamsList) (ResponseList[map[st
 		return response, fmt.Errorf("[list] can't unmarshal response, err %w", err)
 	}
 	return response, nil
+}
+
+func (c *Client) AuthStore() authStore {
+	return c.authorizer
 }

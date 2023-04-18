@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/SierraSoftworks/multicast/v2 v2.0.0
-	github.com/cenkalti/backoff/v4 v4.2.0
+	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/donovanhide/eventsource v0.0.0-20210830082556-c59027999da0
 	github.com/duke-git/lancet/v2 v2.1.18
 	github.com/go-resty/resty/v2 v2.7.0

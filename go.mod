@@ -12,7 +12,7 @@ require (
 	github.com/pocketbase/dbx v1.10.0
 	github.com/pocketbase/pocketbase v0.13.0
 	github.com/stretchr/testify v1.8.2
-	golang.org/x/sync v0.1.0
+	golang.org/x/sync v0.3.0
 )
 
 require (

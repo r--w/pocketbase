@@ -8,6 +8,8 @@ It's well-tested and used in production in [Coinpaprika](https://coinpaprika.com
 ### Status
 I'm looking for passionate and dedicated individuals to help maintain this project.
 
+**UPDATE**: actively maintained fork: [https://github.com/pluja/pocketbase](https://github.com/pluja/pocketbase)
+
 ### Compatibility
 * `v0.13.0` version of SDK is compatible with Pocketbase v0.13.x and higher
 * `v0.12.0` version of SDK is compatible with Pocketbase v0.12.x
